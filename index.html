@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HandSpeak AI - Real-Time Sign Language Translator & Guide</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤟</text></svg>">
+
+  <!-- Google MediaPipe Hands SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header class="app-header">
+    <div class="logo-group">
+      <div class="logo-icon">🤟</div>
+      <div>
+        <h1 class="logo-title">HandSpeak AI</h1>
+        <p class="logo-subtitle">Real-Time Camera Sign Language Translator & Interactive Guide</p>
+      </div>
+    </div>
+
+    <!-- Mode Selector -->
+    <div class="mode-pills">
+      <button id="tab-mode-translate" class="mode-pill-btn active">Live Translator</button>
+      <button id="tab-mode-practice" class="mode-pill-btn">Interactive Practice</button>
+    </div>
+  </header>
+
+  <!-- Main Side-by-Side Layout -->
+  <main class="main-layout">
+
+    <!-- LEFT PANEL: Camera Feed, AI Vision & Translation Buffer -->
+    <section class="panel-camera">
+
+      <!-- Practice Banner (Shown in Practice Mode) -->
+      <div id="practice-banner" class="practice-banner hidden">
+        <div class="flex items-center space-x-3">
+          <div class="practice-target-box" id="practice-target-char">B</div>
+          <div>
+            <div class="text-xs text-indigo-300 font-semibold uppercase tracking-wider">Target Challenge</div>
+            <div class="text-lg font-bold text-white" id="practice-target-name">Sign the letter B</div>
+            <div class="text-xs text-gray-300" id="practice-target-hint">Hold four fingers straight up with thumb tucked</div>
+          </div>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="text-sm font-bold text-emerald-400" id="practice-score">0 pts</span>
+          <button id="btn-practice-skip" class="btn btn-secondary btn-sm">Skip</button>
+        </div>
+      </div>
+
+      <!-- Live Video & Overlay Viewport -->
+      <div class="video-card">
+        <video id="webcam" autoplay playsinline muted></video>
+        <canvas id="overlay-canvas"></canvas>
+
+        <!-- Top Video HUD -->
+        <div class="hud-top-bar">
+          <div id="camera-status" class="status-badge status-offline">Camera Off</div>
+          <div id="fps-counter" class="fps-counter">0 FPS</div>
+        </div>
+
+        <!-- AR Floating Word Tag (Hovers directly over the hand in 3D camera space) -->
+        <div id="ar-hand-tag" class="ar-hand-tag hidden">
+          <div class="ar-tag-content">
+            <span id="ar-tag-char" class="ar-tag-char">--</span>
+            <div class="ar-tag-info">
+              <span id="ar-tag-name" class="ar-tag-name">Recognizing</span>
+              <div class="ar-tag-progress">
+                <div id="ar-tag-progress-fill" class="ar-tag-progress-fill"></div>
+              </div>
+            </div>
+            <span id="ar-tag-check" class="ar-tag-check hidden">✓</span>
+          </div>
+        </div>
+
+        <!-- Floating Translated Sentence Overlay ON CAMERA SCREEN -->
+        <div id="camera-floating-translation" class="camera-floating-translation">
+          <div class="camera-caption-top">
+            <span class="camera-caption-badge">
+              <span class="live-dot"></span> LIVE TRANSLATION
+            </span>
+            <div class="camera-floating-quick-actions">
+              <button id="cam-btn-speak" class="cam-action-btn" title="Speak Aloud">🔊 Speak</button>
+              <button id="cam-btn-space" class="cam-action-btn" title="Add Space">␣ Space</button>
+              <button id="cam-btn-backspace" class="cam-action-btn" title="Backspace">⌫</button>
+              <button id="cam-btn-clear" class="cam-action-btn" title="Clear">🗑</button>
+            </div>
+          </div>
+          <div id="camera-hover-sentence" class="camera-hover-sentence">
+            <span class="placeholder-caption">Translated words hover here...</span>
+          </div>
+        </div>
+
+        <!-- Bottom Detection HUD -->
+        <div class="hud-detection-card">
+          <div class="detection-left">
+            <div id="detected-sign-char" class="detected-badge">--</div>
+            <div>
+              <div class="detection-label">Detected Gesture</div>
+              <div id="detected-sign-name" class="detection-name">Show hand to camera</div>
+            </div>
+          </div>
+
+          <div class="detection-right">
+            <div class="confidence-row">
+              <span>Confidence</span>
+              <span id="confidence-text">0%</span>
+            </div>
+            <div class="progress-track">
+              <div id="confidence-fill" class="progress-fill"></div>
+            </div>
+
+            <!-- Hold-to-confirm progress -->
+            <div id="hold-container" class="w-full mt-1.5 hidden">
+              <div class="confidence-row text-[10px]">
+                <span>Hold to Confirm</span>
+              </div>
+              <div class="progress-track hold-track">
+                <div id="hold-progress-fill" class="progress-fill hold-fill"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real-Time Finger Posture Inspector -->
+      <div class="posture-inspector">
+        <span class="posture-title">Fingers:</span>
+        <span id="pill-thumb" class="posture-pill pill-neutral">Thumb: --</span>
+        <span id="pill-index" class="posture-pill pill-neutral">Index: --</span>
+        <span id="pill-middle" class="posture-pill pill-neutral">Middle: --</span>
+        <span id="pill-ring" class="posture-pill pill-neutral">Ring: --</span>
+        <span id="pill-pinky" class="posture-pill pill-neutral">Pinky: --</span>
+      </div>
+
+      <!-- Camera Action Buttons -->
+      <div class="camera-controls">
+        <button id="btn-start-camera" class="btn btn-primary">
+          <svg class="w-5 h-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+          </svg>
+          Start Camera
+        </button>
+
+        <button id="btn-toggle-skeleton" class="btn btn-secondary active">
+          <svg class="w-5 h-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+          Hand Skeleton
+        </button>
+      </div>
+
+      <!-- Text Output & Sentence Builder -->
+      <div class="translation-box">
+        <div class="translation-header">
+          <span class="section-label">Translated Sentence</span>
+        </div>
+
+        <div id="translated-text" class="translation-display placeholder-text">Detected words will appear here...</div>
+
+        <div class="translation-actions">
+          <div class="action-buttons-group">
+            <button id="btn-speak" class="btn-icon" title="Speak translated text aloud">
+              🔊 <span>Speak</span>
+            </button>
+            <button id="btn-space" class="btn-icon" title="Insert a space">
+              ␣ <span>Space</span>
+            </button>
+            <button id="btn-backspace" class="btn-icon" title="Delete last character">
+              ⌫ <span>Backspace</span>
+            </button>
+            <button id="btn-clear" class="btn-icon" title="Clear all text">
+              🗑 <span>Clear</span>
+            </button>
+          </div>
+
+          <button id="btn-copy" class="btn btn-secondary btn-sm" title="Copy text to clipboard">
+            📋 Copy Text
+          </button>
+        </div>
+
+        <!-- Sentence History -->
+        <div class="history-section">
+          <span class="section-label">Recent History</span>
+          <ul id="history-list" class="history-list mt-1"></ul>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- RIGHT PANEL: Interactive Instructions & Visual Reference Guide -->
+    <aside class="panel-instructions">
+      <div class="panel-header-title">
+        <h2>Visual Instructions & Library</h2>
+        <span class="badge-counter">Side Guide</span>
+      </div>
+
+      <!-- Selected Sign Spotlight Card -->
+      <div id="spotlight-card" class="spotlight-card">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <!-- Search & Filters -->
+      <div class="search-filter-box">
+        <div class="search-input-wrapper">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="search-signs" class="search-input" placeholder="Search signs, letters, phrases...">
+        </div>
+
+        <div class="category-tabs">
+          <button class="filter-tab active" data-filter="all">All Signs</button>
+          <button class="filter-tab" data-filter="alphabet">Alphabet (A-Z)</button>
+          <button class="filter-tab" data-filter="phrase">Phrases & Gestures</button>
+          <button class="filter-tab" data-filter="number">Numbers</button>
+        </div>
+      </div>
+
+      <!-- Filterable Cards Grid -->
+      <div id="instructions-grid" class="instructions-grid">
+        <!-- Sign Cards dynamically rendered from signs_data.js -->
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- Copy Toast Notification -->
+  <div id="copy-toast" class="toast-msg">Copied to clipboard! ✨</div>
+
+  <!-- Application Scripts -->
+  <script src="js/signs_data.js"></script>
+  <script src="js/gesture_rules.js"></script>
+  <script src="js/speech.js"></script>
+  <script src="js/hand_detector.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
