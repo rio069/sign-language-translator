@@ -1,6 +1,7 @@
-# 🤟 HandSpeak AI — Real-Time Sign Language Translator & Interactive Guide
+# 🤟 ANMS HANDSPEAK AI — Real-Time Sign Language Translator & Interactive Guide
+### Authpur National Model School
 
-**HandSpeak AI** is a real-time American Sign Language (ASL) and gesture-to-text translator powered by computer vision. It features a modern, side-by-side user interface: the camera tracking & translation engine on the left, and a visual instruction manual and practice guide right beside it.
+**ANMS HANDSPEAK AI** is a real-time American Sign Language (ASL) and gesture-to-text translator powered by computer vision, built for Authpur National Model School. It features a modern, side-by-side user interface: the camera tracking & translation engine on the left, and a visual instruction manual and practice guide right beside it.
 
 ---
 

@@ -428,28 +428,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // Render detailed spotlight panel
     spotlightCard.innerHTML = `
       <div class="spotlight-header">
-        <div class="flex items-center space-x-3">
+        <div class="spotlight-title-group">
           <div class="spotlight-icon-wrap">
             ${sign.svg}
           </div>
-          <div>
-            <h3 class="text-xl font-bold text-white">${sign.name}</h3>
+          <div class="spotlight-title-info">
+            <h3 class="spotlight-sign-title">${sign.name}</h3>
             <span class="sign-badge badge-${sign.type}">${sign.badge} · Outputs "${sign.outputChar}"</span>
           </div>
         </div>
-        <button id="btn-practice-this" class="btn btn-sm btn-accent">
+        <button id="btn-practice-this" class="spotlight-practice-btn">
           🎯 Practice This Sign
         </button>
       </div>
 
-      <div class="mt-4">
-        <h4 class="text-xs uppercase tracking-wider text-indigo-400 font-semibold mb-2">Step-by-Step Instructions</h4>
+      <div class="spotlight-section">
+        <h4 class="spotlight-section-heading">Step-by-Step Instructions</h4>
         <ol class="instruction-steps">
           ${sign.steps.map(step => `<li>${step}</li>`).join('')}
         </ol>
       </div>
 
-      <div class="mt-4 grid grid-cols-2 gap-2 text-xs">
+      <div class="spotlight-finger-grid">
         <div class="finger-guide-box">
           <span class="guide-label">Thumb:</span>
           <span class="guide-val">${sign.fingerState.thumb}</span>
@@ -466,13 +466,13 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="guide-label">Ring:</span>
           <span class="guide-val">${sign.fingerState.ring}</span>
         </div>
-        <div class="finger-guide-box col-span-2">
+        <div class="finger-guide-box finger-box-full">
           <span class="guide-label">Pinky:</span>
           <span class="guide-val">${sign.fingerState.pinky}</span>
         </div>
       </div>
 
-      <div class="mt-3 p-2.5 rounded-lg bg-indigo-950/60 border border-indigo-800/40 text-xs text-indigo-200">
+      <div class="spotlight-tip-box">
         💡 <strong>Pro Tip:</strong> ${sign.tips}
       </div>
     `;

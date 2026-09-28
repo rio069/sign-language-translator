@@ -45,7 +45,8 @@ def main():
     url = f"http://localhost:{port}"
 
     print("=" * 60)
-    print(" 🤟 HandSpeak AI - Sign Language Translator & Guide")
+    print(" 🤟 ANMS HANDSPEAK AI - Authpur National Model School")
+    print("    Sign Language to Text Translator & Interactive Guide")
     print("=" * 60)
     print(f" • Serving from: {script_dir}")
     print(f" • Web app URL:  {url}")
