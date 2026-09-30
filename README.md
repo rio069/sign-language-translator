@@ -66,7 +66,6 @@ open index.html
 
 ### 💬 Common Words & Gestures
 - **HELLO / OPEN PALM**: 5 fingers fully extended and spread facing camera.
-- **I LOVE YOU (🤟)**: Universal sign (Thumb, Index, and Pinky extended).
 - **YES / THUMBS UP**: Fist with thumb pointing straight up.
 - **NO / THUMBS DOWN**: Fist with thumb pointing straight down.
 - **PEACE / VICTORY (✌️)**: Index and middle fingers spread in a V.

@@ -146,11 +146,7 @@ class GestureClassifier {
       detectedId = "HELLO";
       confidence = 0.95;
     }
-    // 2. I LOVE YOU (🤟): Thumb, Index, Pinky extended, Middle & Ring curled
-    else if (extended.index && extended.pinky && !extended.middle && !extended.ring && extended.thumbOut) {
-      detectedId = "ILY";
-      confidence = 0.97;
-    }
+
     // 3. Y ("Hang Loose"): Thumb and Pinky extended, Index, Middle, Ring curled
     else if (!extended.index && !extended.middle && !extended.ring && extended.pinky && extended.thumbOut) {
       detectedId = "Y";

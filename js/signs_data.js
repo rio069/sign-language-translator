@@ -135,19 +135,6 @@ function generateHandSvg(poseType) {
         <path d="M78,65 L102,52 C106,50 104,42 98,44 L76,56" fill="${highlight}" fill-opacity="0.3" stroke="${highlight}" stroke-width="4"/>
       </svg>`;
 
-    case 'ILY':
-      return `<svg viewBox="0 0 120 120" class="hand-svg" fill="none" stroke="${outline}" stroke-width="${strokeW}" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M48,95 L48,110 C48,115 72,115 72,110 L72,95" fill="${baseSkin}"/>
-        <rect x="40" y="52" width="40" height="43" rx="10" fill="${palmColor}"/>
-        <!-- Thumb extended -->
-        <path d="M42,68 L18,55 C14,52 16,44 22,47 L44,60" fill="${highlight}" fill-opacity="0.3" stroke="${highlight}" stroke-width="4"/>
-        <!-- Index extended -->
-        <rect x="44" y="12" width="11" height="55" rx="5.5" fill="${highlight}" fill-opacity="0.3" stroke="${highlight}" stroke-width="4"/>
-        <!-- Pinky extended -->
-        <rect x="75" y="18" width="10" height="50" rx="5" fill="${highlight}" fill-opacity="0.3" stroke="${highlight}" stroke-width="4"/>
-        <!-- Middle & Ring curled -->
-        <path d="M55,62 Q65,65 72,62" stroke="${outline}" stroke-width="3"/>
-      </svg>`;
 
     case 'HELLO':
       return `<svg viewBox="0 0 120 120" class="hand-svg" fill="none" stroke="${outline}" stroke-width="${strokeW}" stroke-linecap="round" stroke-linejoin="round">
@@ -262,30 +249,7 @@ const SIGN_DATABASE = [
     tips: "Great for starting a sentence or greeting someone!",
     practicePrompt: "Show an open flat hand to sign HELLO"
   },
-  {
-    id: "ILY",
-    name: "I Love You (🤟)",
-    type: "phrase",
-    badge: "Phrase",
-    outputChar: "I LOVE YOU",
-    svg: generateHandSvg('ILY'),
-    description: "Universal ASL sign: Thumb, Index, and Pinky extended.",
-    steps: [
-      "Extend your index finger and pinky finger straight up.",
-      "Extend your thumb outwards to the side.",
-      "Curl your middle and ring fingers flat into your palm.",
-      "Face your palm toward the camera."
-    ],
-    fingerState: {
-      thumb: "Extended Out",
-      index: "Extended Up",
-      middle: "Curled Down",
-      ring: "Curled Down",
-      pinky: "Extended Up"
-    },
-    tips: "Combines letters 'I', 'L', and 'Y' into one iconic sign!",
-    practicePrompt: "Extend thumb, index, and pinky to sign I LOVE YOU"
-  },
+
   {
     id: "THUMBS_UP",
     name: "Thumbs Up / Good / Yes",
@@ -401,7 +365,7 @@ const SIGN_DATABASE = [
       ring: "Curled",
       pinky: "Extended Up"
     },
-    tips: "Unlike 'I Love You', your thumb is NOT sticking out to the side.",
+    tips: "Make sure your thumb is folded across middle & ring fingers, locking them down.",
     practicePrompt: "Extend index and pinky while holding middle two down"
   },
 
