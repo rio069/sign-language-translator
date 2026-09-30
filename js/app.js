@@ -261,17 +261,8 @@ document.addEventListener('DOMContentLoaded', () => {
     liveSignBadge.classList.add('scale-pop');
     setTimeout(() => liveSignBadge.classList.remove('scale-pop'), 250);
 
-    const charToAdd = sign.outputChar;
-    if (charToAdd.length > 1) {
-      // It's a full word (e.g. "HELLO", "YES", "I LOVE YOU")
-      if (translatedSentence.length > 0 && !translatedSentence.endsWith(' ')) {
-        translatedSentence += ' ';
-      }
-      translatedSentence += charToAdd + ' ';
-    } else {
-      // Single character
-      translatedSentence += charToAdd;
-    }
+    // Replace the previous text with the latest confirmed recognized sign
+    translatedSentence = sign.outputChar;
 
     renderTranslation();
   }
